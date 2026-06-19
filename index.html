@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16251d" />
+  <meta name="description" content="Project Hermit — a calm daily checklist for attention, depth, stillness, connection, and restraint." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Project Hermit</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Attention • Presence • Depth</p>
+        <h1>Project Hermit</h1>
+      </div>
+      <button class="install-button hidden" id="installBtn" type="button">Install</button>
+    </header>
+
+    <main>
+      <section class="hero-card" aria-label="Daily progress summary">
+        <div class="hero-copy">
+          <p class="date-label" id="todayLabel">Today</p>
+          <h2 id="dailyMessage">Tend the garden.</h2>
+          <p class="mission">Not escape. Cultivation: recover attention, speak clearly, read slowly, stay present.</p>
+        </div>
+        <div class="progress-ring" id="progressRing" aria-label="Completion progress">
+          <span id="progressNumber">0%</span>
+        </div>
+      </section>
+
+      <nav class="tabbar" aria-label="Main sections">
+        <button class="tab active" data-tab="today" type="button">Today</button>
+        <button class="tab" data-tab="garden" type="button">Garden</button>
+        <button class="tab" data-tab="analytics" type="button">Analytics</button>
+        <button class="tab" data-tab="reflection" type="button">Reflection</button>
+        <button class="tab" data-tab="settings" type="button">Settings</button>
+      </nav>
+
+      <section class="panel active" id="todayPanel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Daily checklist</p>
+            <h2>What you water grows.</h2>
+          </div>
+          <button class="ghost-button" id="clearTodayBtn" type="button">Clear today</button>
+        </div>
+        <div class="checklist" id="checklist"></div>
+      </section>
+
+      <section class="panel" id="gardenPanel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Visual feedback</p>
+            <h2>Your garden today</h2>
+          </div>
+          <span class="soft-pill" id="plantCount">0 plants</span>
+        </div>
+        <div class="garden-card">
+          <div class="sun"></div>
+          <div class="garden-sky">
+            <p id="gardenQuote">Complete habits to cultivate the garden.</p>
+          </div>
+          <div class="garden-bed" id="gardenBed" aria-label="Garden visualization"></div>
+        </div>
+        <div class="legend" id="gardenLegend"></div>
+      </section>
+
+      <section class="panel" id="analyticsPanel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Weekly review</p>
+            <h2>Where attention went</h2>
+          </div>
+          <span class="soft-pill" id="weekScore">0% week</span>
+        </div>
+        <div class="insight-grid" id="insightGrid"></div>
+        <div class="analytics-card">
+          <h3>Last 7 days</h3>
+          <div class="heatmap" id="heatmap"></div>
+        </div>
+        <div class="analytics-card">
+          <h3>By area</h3>
+          <div id="categoryStats"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="reflectionPanel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Daily writing</p>
+            <h2>Project the thought.</h2>
+          </div>
+          <span class="soft-pill" id="wordCount">0 words</span>
+        </div>
+        <div class="reflection-card">
+          <label for="reflectionText">Today’s reflection</label>
+          <p class="hint">Prompt: What did I attend to today? What did I avoid? What needs care tomorrow?</p>
+          <textarea id="reflectionText" rows="11" placeholder="Write a short text. It does not need to be perfect. It needs to exist."></textarea>
+          <div class="reflection-actions">
+            <button class="primary-button" id="copyReflectionBtn" type="button">Copy</button>
+            <button class="ghost-button" id="clearReflectionBtn" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="analytics-card">
+          <h3>Recent reflections</h3>
+          <div class="reflection-list" id="reflectionList"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="settingsPanel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Configure</p>
+            <h2>Rules, not vibes.</h2>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Core rules</h3>
+          <ol class="rules-list">
+            <li>No social media apps. Browser only for replies or specific checks.</li>
+            <li>No YouTube app. Search only. No Shorts, no feeds, no suggestion loops.</li>
+            <li>Phone used deliberately: WhatsApp, ChatGPT, maps, banking, music, reading, language training.</li>
+            <li>WhatsApp capped at 30 minutes of checking/texting. Meaningful calls do not count.</li>
+            <li>Calls are unlimited. Real connection is promoted.</li>
+            <li>Passive entertainment only on weekends, under two hours per day.</li>
+            <li>At least 30 minutes of slow reading every day.</li>
+            <li>Write a short text every day.</li>
+            <li>Five minutes doing absolutely nothing.</li>
+            <li>Phone away when possible. Alarm exception at night is allowed.</li>
+            <li>Breaking a rule does not cancel the project. Return immediately.</li>
+          </ol>
+        </div>
+
+        <div class="settings-card">
+          <h3>Habits</h3>
+          <div class="habit-editor" id="habitEditor"></div>
+          <form class="add-habit" id="addHabitForm">
+            <input id="newHabitTitle" name="title" placeholder="Add a custom habit" autocomplete="off" />
+            <select id="newHabitCategory" name="category">
+              <option value="attention">Attention</option>
+              <option value="depth">Depth</option>
+              <option value="stillness">Stillness</option>
+              <option value="connection">Connection</option>
+              <option value="restraint">Restraint</option>
+            </select>
+            <button class="primary-button" type="submit">Add</button>
+          </form>
+        </div>
+
+        <div class="settings-card">
+          <h3>Data</h3>
+          <div class="data-actions">
+            <button class="ghost-button" id="exportBtn" type="button">Export JSON</button>
+            <label class="ghost-button file-label" for="importFile">Import JSON</label>
+            <input class="hidden" id="importFile" type="file" accept="application/json" />
+            <button class="danger-button" id="resetBtn" type="button">Reset app</button>
+          </div>
+          <p class="hint">Data is stored locally on this device. No account. No tracking. No cloud.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
