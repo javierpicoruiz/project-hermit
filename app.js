@@ -4,11 +4,11 @@ const STORAGE_KEYS = {
 };
 
 const CATEGORIES = {
-  attention: { label: "Attention", plant: "🌾", description: "protect focus" },
-  depth: { label: "Depth", plant: "🌳", description: "read, write, think" },
-  stillness: { label: "Stillness", plant: "🪨", description: "tolerate silence" },
-  connection: { label: "Connection", plant: "🐦", description: "real contact" },
-  restraint: { label: "Restraint", plant: "🌿", description: "avoid passive loops" }
+  attention: { label: "Attention", effect: "clear light", description: "protect focus" },
+  depth: { label: "Depth", effect: "growing pines", description: "read, write, think" },
+  stillness: { label: "Stillness", effect: "stone & water", description: "tolerate silence" },
+  connection: { label: "Connection", effect: "birds & warmth", description: "real contact" },
+  restraint: { label: "Restraint", effect: "cultivated ground", description: "avoid passive loops" }
 };
 
 const DEFAULT_HABITS = [
@@ -175,6 +175,7 @@ function renderChecklist() {
 
 function renderGarden() {
   const bed = $("#gardenBed");
+  const scene = $("#gardenScene");
   const legend = $("#gardenLegend");
   const habits = enabledHabits();
   const record = getTodayRecord();
@@ -182,39 +183,57 @@ function renderGarden() {
   bed.innerHTML = "";
   legend.innerHTML = "";
 
-  $("#plantCount").textContent = `${completed.length} ${completed.length === 1 ? "plant" : "plants"}`;
+  const categoryCounts = Object.fromEntries(Object.keys(CATEGORIES).map((id) => [id, 0]));
+  completed.forEach((habit) => {
+    if (categoryCounts[habit.category] !== undefined) categoryCounts[habit.category] += 1;
+  });
+
+  scene.className = "garden-card";
+  Object.entries(categoryCounts).forEach(([category, count]) => {
+    scene.classList.toggle(`has-${category}`, count > 0);
+    scene.style.setProperty(`--${category}-level`, Math.min(count, 4));
+  });
+  scene.style.setProperty("--garden-progress", habits.length ? completed.length / habits.length : 0);
+
+  $("#plantCount").textContent = completed.length
+    ? `${completed.length} ${completed.length === 1 ? "act" : "acts"} of care`
+    : "Garden at rest";
   $("#gardenQuote").textContent = completed.length
     ? "A visible record of attention. Small actions, slow growth."
-    : "Complete habits to cultivate the garden.";
-
-  if (!completed.length) {
-    const empty = document.createElement("div");
-    empty.className = "plant";
-    empty.style.left = "50%";
-    empty.style.top = "72%";
-    empty.style.setProperty("--size", "3rem");
-    empty.textContent = "🌱";
-    bed.appendChild(empty);
-  }
+    : "The landscape waits quietly. Begin when you are ready.";
 
   completed.forEach((habit, index) => {
-    const plant = document.createElement("div");
-    plant.className = "plant";
     const pos = seededPosition(habit.id, index, completed.length);
-    plant.style.left = `${pos.x}%`;
-    plant.style.top = `${pos.y}%`;
-    plant.style.setProperty("--size", `${pos.size}rem`);
-    plant.title = habit.title;
-    plant.textContent = CATEGORIES[habit.category]?.plant || "🌱";
-    bed.appendChild(plant);
+    const feature = document.createElement("div");
+    const category = CATEGORIES[habit.category] ? habit.category : "restraint";
+    feature.className = `garden-feature garden-feature--${category}`;
+    feature.style.left = `${pos.x}%`;
+    feature.style.top = `${pos.y}%`;
+    feature.style.setProperty("--feature-scale", pos.scale);
+    feature.title = habit.title;
+    feature.setAttribute("aria-hidden", "true");
+    feature.innerHTML = gardenFeatureMarkup(category);
+    bed.appendChild(feature);
   });
+
+  bed.setAttribute("aria-label", completed.length
+    ? `A mountain garden shaped by ${completed.length} completed ${completed.length === 1 ? "habit" : "habits"}`
+    : "A quiet mountain garden at rest");
 
   Object.entries(CATEGORIES).forEach(([id, cat]) => {
     const item = document.createElement("span");
-    item.className = "legend-item";
-    item.textContent = `${cat.plant} ${cat.label}`;
+    item.className = `legend-item legend-item--${id}`;
+    item.innerHTML = `<i aria-hidden="true"></i><span><strong>${cat.label}</strong> · ${cat.effect}</span>`;
     legend.appendChild(item);
   });
+}
+
+function gardenFeatureMarkup(category) {
+  if (category === "depth") return '<i class="tree-trunk"></i><i class="tree-crown tree-crown--low"></i><i class="tree-crown tree-crown--mid"></i><i class="tree-crown tree-crown--high"></i>';
+  if (category === "stillness") return '<i class="quiet-water"></i><i class="quiet-stone quiet-stone--one"></i><i class="quiet-stone quiet-stone--two"></i>';
+  if (category === "connection") return '<i class="bird bird--one"></i><i class="bird bird--two"></i>';
+  if (category === "attention") return '<i class="meadow-stem meadow-stem--one"></i><i class="meadow-stem meadow-stem--two"></i><i class="meadow-stem meadow-stem--three"></i>';
+  return '<i class="garden-row garden-row--one"></i><i class="garden-row garden-row--two"></i><i class="garden-shoot garden-shoot--one"></i><i class="garden-shoot garden-shoot--two"></i>';
 }
 
 function seededPosition(seed, index, total) {
@@ -223,8 +242,8 @@ function seededPosition(seed, index, total) {
   const row = index % 3;
   const baseX = 12 + ((index * 17 + hash % 13) % 76);
   const y = 62 + row * 12 + (hash % 8);
-  const size = 2 + ((hash % 9) / 10) + Math.min(total, 10) * 0.03;
-  return { x: baseX, y, size };
+  const scale = 0.82 + ((hash % 9) / 20) + Math.min(total, 10) * 0.015;
+  return { x: baseX, y, scale };
 }
 
 function lastNDates(n) {

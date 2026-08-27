@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#16251d" />
+  <meta name="theme-color" content="#101a16" />
   <meta name="description" content="Project Hermit — a calm daily checklist for attention, depth, stillness, connection, and restraint." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
@@ -58,14 +58,22 @@
             <p class="eyebrow">Visual feedback</p>
             <h2>Your garden today</h2>
           </div>
-          <span class="soft-pill" id="plantCount">0 plants</span>
+          <span class="soft-pill" id="plantCount">Garden at rest</span>
         </div>
-        <div class="garden-card">
-          <div class="sun"></div>
+        <div class="garden-card" id="gardenScene">
+          <div class="garden-atmosphere" aria-hidden="true"></div>
+          <div class="garden-sun" aria-hidden="true"></div>
+          <div class="garden-skyline garden-skyline--far" aria-hidden="true"></div>
+          <div class="garden-skyline garden-skyline--near" aria-hidden="true"></div>
+          <div class="forest-layer forest-layer--far" aria-hidden="true"></div>
+          <div class="garden-mist garden-mist--high" aria-hidden="true"></div>
+          <div class="forest-layer forest-layer--near" aria-hidden="true"></div>
+          <div class="garden-mist garden-mist--low" aria-hidden="true"></div>
           <div class="garden-sky">
             <p id="gardenQuote">Complete habits to cultivate the garden.</p>
           </div>
-          <div class="garden-bed" id="gardenBed" aria-label="Garden visualization"></div>
+          <div class="garden-ground" aria-hidden="true"></div>
+          <div class="garden-bed" id="gardenBed" role="img" aria-label="A quiet mountain garden at rest"></div>
         </div>
         <div class="legend" id="gardenLegend"></div>
       </section>
